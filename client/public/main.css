@@ -1,0 +1,24 @@
+@import 'aos/dist/aos.css';
+
+/* Gallery image styles */
+.gallery-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.gallery-img:hover {
+  transform: scale(1.05);
+  opacity: 0.6;
+}
+
+/* Modal image styles */
+.modal-img {
+  max-height: 420px;
+  width: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
