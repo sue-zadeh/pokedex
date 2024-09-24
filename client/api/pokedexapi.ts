@@ -11,3 +11,8 @@ export const getPokemonDetails = async (id: number) => {
   const data = await response.json()
   return data
 }
+export const getPokemonByType = async (type: string) => {
+  const response = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
+  const data = await response.json()
+  return data
+}

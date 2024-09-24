@@ -1,8 +1,15 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import '@fortawesome/fontawesome-free/css/all.css'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import AdvancedSearch from '../components/AdvancedSearch'
 
 const Navbar: React.FC = () => {
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
+  const navigate = useNavigate() // Replaces useHistory()
+
+  const toggleAdvancedSearch = () => {
+    setShowAdvancedSearch(!showAdvancedSearch)
+  }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -27,9 +34,27 @@ const Navbar: React.FC = () => {
                 <i className="fas fa-images me-2"></i>Pokemon Gallery
               </Link>
             </li>
+            <li className="nav-item">
+              <button
+                className="btn btn-link nav-link"
+                onClick={toggleAdvancedSearch}
+              >
+                <i className="fas fa-search me-2"></i>
+                {showAdvancedSearch
+                  ? 'Hide Advanced Search'
+                  : 'Show Advanced Search'}
+              </button>
+            </li>
           </ul>
         </div>
       </div>
+
+      {/* Advanced Search Bar */}
+      {showAdvancedSearch && (
+        <div className="advanced-search bg-light p-4 mt-2">
+          <AdvancedSearch />
+        </div>
+      )}
     </nav>
   )
 }

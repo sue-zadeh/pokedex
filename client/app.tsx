@@ -17,7 +17,9 @@ const App: React.FC = () => {
       <Navbar />
       <header className="header">
         <img src="/assets/pok.png" alt="Pokémon Banner" className="banner" />
-        <h1>Pokédex</h1>
+        <h1>
+          <b>Pokédex</b>
+        </h1>
       </header>
       <Routes>
         <Route path="/" element={<Home />} />

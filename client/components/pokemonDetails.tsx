@@ -1,21 +1,48 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { getPokemonDetails, getPokemonByType } from '../api/pokedexapi'
+import PokemonCard from '../components/pokemonCard'
 
 const PokemonDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>() // Extracts the id from URL params
+  const { id } = useParams<{ id: string }>()
   const [pokemon, setPokemon] = useState<any>(null)
+  const [speciesDetails, setSpeciesDetails] = useState<any>(null) // For description
+  const [pokemonList, setPokemonList] = useState<any[]>([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`) // Update with correct API endpoint
-      const data = await response.json()
-      console.log(data) // Debugging to see the fetched data in the console
-      setPokemon(data)
+      const response = await getPokemonDetails(Number(id))
+      setPokemon(response)
+
+      // Fetch Pokémon species for description
+      const speciesResponse = await fetch(
+        `https://pokeapi.co/api/v2/pokemon-species/${id}/`
+      )
+      const speciesData = await speciesResponse.json()
+      setSpeciesDetails(speciesData)
     }
     fetchPokemonDetails()
-  }, [id]) // Add `id` to dependencies array so it fetches new data if the id changes
+  }, [id])
 
-  if (!pokemon) return <p>Loading...</p>
+  const handleTypeClick = (type: string) => {
+    getPokemonByType(type).then((data) => {
+      const pokemonPromises = data.pokemon.map((pokeObj: any) =>
+        fetch(pokeObj.pokemon.url).then((res) => res.json())
+      )
+      Promise.all(pokemonPromises).then((results) => {
+        navigate('/gallery', { state: { pokemonList: results } })
+      })
+    })
+  }
+
+  if (!pokemon || !speciesDetails) return <p>Loading...</p>
+
+  // Extract English description from flavor_text_entries
+  const description =
+    speciesDetails.flavor_text_entries.find(
+      (entry: any) => entry.language.name === 'en'
+    )?.flavor_text || 'No description available'
 
   return (
     <div className="home-container container mt-5">
@@ -29,11 +56,7 @@ const PokemonDetails: React.FC = () => {
         </div>
         <div className="col-lg-6">
           <h1>{pokemon.name}</h1>
-          <p>
-            {pokemon.flavor_text_entries
-              ? pokemon.flavor_text_entries[0].flavor_text
-              : 'No description available'}
-          </p>
+          <p>{description}</p> {/* Description fetched from species API */}
           <ul>
             <li>Height: {pokemon.height}</li>
             <li>Weight: {pokemon.weight}</li>
@@ -42,18 +65,19 @@ const PokemonDetails: React.FC = () => {
           <div>
             <h4>Types</h4>
             {pokemon.types.map((typeObj: any) => (
-              <button className="btn btn-primary mx-1" key={typeObj.type.name}>
+              <button
+                className="btn btn-primary mx-1"
+                key={typeObj.type.name}
+                onClick={() => handleTypeClick(typeObj.type.name)}
+              >
                 {typeObj.type.name}
               </button>
             ))}
-          </div>
-          <div>
-            <h4>Weaknesses</h4>
-            {/* Weakness logic here */}
           </div>
         </div>
       </div>
     </div>
   )
 }
+
 export default PokemonDetails
