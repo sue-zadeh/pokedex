@@ -1,13 +1,30 @@
-// main entry for react and the frontend
-
-import React from 'react'
-import Home from './components/home'
+import React, { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import Navbar from './components/navbar'
+import Home from './pages/home'
+import PokemonGallery from './pages/PokemonGallery'
+import PokemonDetails from './components/pokemonDetails'
 
 const App: React.FC = () => {
+  useEffect(() => {
+    AOS.init()
+  }, [])
+
   return (
-    <div>
-      <Home />
-    </div>
+    <Router>
+      <Navbar />
+      <header className="header">
+        <img src="/assets/pok.png" alt="Pokémon Banner" className="banner" />
+        <h1>Pokédex</h1>
+      </header>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/gallery" element={<PokemonGallery />} />
+        <Route path="/pokemon/:id" element={<PokemonDetails />} />
+      </Routes>
+    </Router>
   )
 }
 

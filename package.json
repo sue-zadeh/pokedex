@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",  
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.6.0",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
     "dotenv": "^16.3.1",
@@ -23,6 +24,7 @@
     "@babel/core": "^7.22.17",
     "@babel/preset-env": "^7.22.15",
     "@babel/preset-react": "^7.22.15",
+    "@types/aos": "^3.0.7",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
@@ -37,9 +39,22 @@
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   },
-  "description": "This is my portfolio that I built it from scratch with reactjs, Javascript and css3.",
-  "main": "index.js",
+  "description": "pokemon-api",
+  "main": "flask_app/api.py",
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Sue",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://127.0.0.1:5000/"
 }

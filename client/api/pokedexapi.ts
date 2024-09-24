@@ -1,6 +1,13 @@
-import axios from 'axios'
+// api/pokedexapi.ts
 
 export const getPokemonList = async () => {
-  const response = await axios.get('http://localhost:5000/api/pokemon')
-  return response.data
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150')
+  const data = await response.json()
+  return data
+}
+
+export const getPokemonDetails = async (id: number) => {
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+  const data = await response.json()
+  return data
 }
