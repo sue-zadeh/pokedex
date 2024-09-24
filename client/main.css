@@ -84,6 +84,12 @@ body {
   justify-content: center; 
   margin: 0 auto; 
 }
+.card:hover {
+  transform: scale(1.05);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
 .row {
   display: flex;
   justify-content: center; 
@@ -134,4 +140,3 @@ body {
 .text-end {
   text-align: right !important;
 }
-
