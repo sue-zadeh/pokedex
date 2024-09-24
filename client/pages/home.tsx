@@ -6,7 +6,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     // Load a default Pokémon, e.g., Bulbasaur, when the page loads
-    getPokemonDetails(1).then((data) => {
+    getPokemonDetails(25).then((data) => {
       console.log(data) // Ensure you're logging data for debugging
       setPokemon(data)
     })
