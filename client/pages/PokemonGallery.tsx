@@ -16,62 +16,37 @@ interface Pokemon {
 }
 
 const PokemonGallery: React.FC = () => {
+  const location = useLocation()
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
   const [filteredPokemonList, setFilteredPokemonList] = useState<Pokemon[]>([])
   const [visibleCount, setVisibleCount] = useState(20)
   const [searchTerm, setSearchTerm] = useState('')
   const [sortType, setSortType] = useState('id')
-  const location = useLocation()
-  const { types, area, ability, number } = location.state || {}
 
+  // Check if there's a filteredPokemonList passed in the location state
   useEffect(() => {
-    getPokemonList().then((data) => {
-      setPokemonList(data.results)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (pokemonList.length === 0) return
-
-    let filteredPokemon = [...pokemonList]
-
-    if (types) {
-      filteredPokemon = filteredPokemon.filter((pokemon) =>
-        pokemon.types?.some((typeObj) => typeObj.type.name === types)
-      )
+    if (location.state && location.state.filteredPokemonList) {
+      setFilteredPokemonList(location.state.filteredPokemonList)
+    } else {
+      // Fetch Pokémon if not passed via location state
+      getPokemonList().then((data) => {
+        setPokemonList(data.results)
+        setFilteredPokemonList(data.results) // Initially show all Pokémon
+      })
     }
+  }, [location.state])
 
-    if (area) {
-      filteredPokemon = filteredPokemon.filter(
-        (pokemon) => pokemon.area === area
-      )
-    }
-
-    if (ability) {
-      filteredPokemon = filteredPokemon.filter((pokemon) =>
-        pokemon.abilities?.some(
-          (abilityObj) => abilityObj.ability.name === ability
-        )
-      )
-    }
-
-    if (number) {
-      filteredPokemon = filteredPokemon.filter(
-        (pokemon) => pokemon.id <= number
-      )
-    }
-
-    setFilteredPokemonList(filteredPokemon)
-  }, [types, area, ability, number, pokemonList])
-
+  // Handle search logic
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase())
   }
 
+  // Handle sorting logic
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortType(e.target.value)
   }
 
+  // Filter and sort the list of Pokémon
   const visiblePokemon = filteredPokemonList
     .filter((pokemon) => pokemon.name.toLowerCase().includes(searchTerm))
     .sort((a, b) => {
