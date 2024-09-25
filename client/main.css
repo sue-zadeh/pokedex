@@ -15,9 +15,28 @@ body {
 
 /*navbar*/
 
-/* .navbar-nav {
-  display: flex;
-;} */
+/* Make sure the navbar stays visible at the top on small screens */
+/* .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* to be Ensure it's on top of other elements */
+  /* background-color: #28a745;  */ 
+/* } */
+
+@media (max-width: 768px) {
+  /* Ensure the search button is always visible on small screens */
+  .navbar-nav {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  /* Adjust the advanced search visibility for small screens */
+  .advanced-search {
+    position: relative;
+    padding: 1rem;
+    background-color: #13bf8e; 
+  }
+}
 
 
 /* Header and Banner */

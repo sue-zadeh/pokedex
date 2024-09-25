@@ -1,17 +1,16 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import AdvancedSearch from '../components/AdvancedSearch'
+import { Link } from 'react-router-dom'
+import AdvancedSearch from './AdvancedSearch'
 
 const Navbar: React.FC = () => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-  const navigate = useNavigate() // Replaces useHistory()
 
   const toggleAdvancedSearch = () => {
     setShowAdvancedSearch(!showAdvancedSearch)
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light text-dark fs-5">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           <i className="fas fa-home me-2"></i>Home
@@ -23,20 +22,28 @@ const Navbar: React.FC = () => {
           data-bs-target="#navbarNav"
           aria-controls="navbarNav"
           aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/gallery">
+              <Link
+                className={`nav-link ${
+                  window.location.pathname === '/gallery'
+                    ? 'text-warning'
+                    : 'text-primary'
+                }`}
+                to="/gallery"
+              >
                 <i className="fas fa-images me-2"></i>Pokemon Gallery
               </Link>
             </li>
             <li className="nav-item">
               <button
-                className="btn btn-link nav-link"
+                className={`btn btn-link nav-link ${
+                  showAdvancedSearch ? 'text-warning' : 'text-primary'
+                }`}
                 onClick={toggleAdvancedSearch}
               >
                 <i className="fas fa-search me-2"></i>

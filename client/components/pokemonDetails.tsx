@@ -66,7 +66,7 @@ const PokemonDetails: React.FC = () => {
             <h4>Types</h4>
             {pokemon.types.map((typeObj: any) => (
               <button
-                className="btn btn-primary mx-1"
+                className="btn btn-primary px-5 mx-1"
                 key={typeObj.type.name}
                 onClick={() => handleTypeClick(typeObj.type.name)}
               >
