@@ -9,34 +9,35 @@ interface Pokemon {
   height: number
   weight: number
   number: number
-  types: string
-  ability: any
-  area: any
+  types: { type: { name: string } }[]
+  abilities: { ability: { name: string } }[]
+  area: string
   url: string
 }
 
 const PokemonGallery: React.FC = () => {
-  const [originalPokemonList, setOriginalPokemonList] = useState<Pokemon[]>([]) // Store the original list
-  const [pokemonList, setPokemonList] = useState<Pokemon[]>([]) // Display filtered list
+  const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
+  const [filteredPokemonList, setFilteredPokemonList] = useState<Pokemon[]>([])
   const [visibleCount, setVisibleCount] = useState(20)
-  const [searchTerm, setSearchTerm] = useState('') // For search functionality
-  const [sortType, setSortType] = useState('id') // For sorting
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortType, setSortType] = useState('id')
   const location = useLocation()
   const { types, area, ability, number } = location.state || {}
 
   useEffect(() => {
     getPokemonList().then((data) => {
-      setOriginalPokemonList(data.results) // Fetch and store the original list
-      setPokemonList(data.results) // Initially set the list to the full list
+      setPokemonList(data.results)
     })
   }, [])
 
   useEffect(() => {
-    let filteredPokemon = [...originalPokemonList] // Use original list for filtering
+    if (pokemonList.length === 0) return
+
+    let filteredPokemon = [...pokemonList]
 
     if (types) {
       filteredPokemon = filteredPokemon.filter((pokemon) =>
-        pokemon.types.includes(types)
+        pokemon.types?.some((typeObj) => typeObj.type.name === types)
       )
     }
 
@@ -48,43 +49,43 @@ const PokemonGallery: React.FC = () => {
 
     if (ability) {
       filteredPokemon = filteredPokemon.filter((pokemon) =>
-        pokemon.ability.includes(ability)
+        pokemon.abilities?.some(
+          (abilityObj) => abilityObj.ability.name === ability
+        )
       )
     }
 
     if (number) {
       filteredPokemon = filteredPokemon.filter(
-        (pokemon) => pokemon.number <= number
+        (pokemon) => pokemon.id <= number
       )
     }
 
-    setPokemonList(filteredPokemon) // Update the displayed list
-  }, [types, area, ability, number, originalPokemonList])
+    setFilteredPokemonList(filteredPokemon)
+  }, [types, area, ability, number, pokemonList])
 
-  // Handle search logic
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase())
   }
 
-  // Handle sorting logic
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortType(e.target.value)
   }
 
-  // Filter the list of Pokémon by search term and sorting
-  const filteredPokemonList = pokemonList
+  const visiblePokemon = filteredPokemonList
     .filter((pokemon) => pokemon.name.toLowerCase().includes(searchTerm))
     .sort((a, b) => {
       if (sortType === 'name') {
-        return a.name.localeCompare(b.name) // Use localeCompare for strings (name)
+        return a.name.localeCompare(b.name)
       } else if (sortType === 'height') {
-        return a.height - b.height // For numbers, subtract them
+        return a.height - b.height
       } else if (sortType === 'weight') {
-        return a.weight - b.weight // For numbers, subtract them
+        return a.weight - b.weight
       } else {
-        return a.id - b.id // Default to sorting by ID
+        return a.id - b.id
       }
     })
+    .slice(0, visibleCount)
 
   const handleShowMore = () => {
     setVisibleCount((prevCount) => prevCount + 10)
@@ -98,11 +99,11 @@ const PokemonGallery: React.FC = () => {
             type="text"
             className="form-control form-control-sm fs-5"
             placeholder="Search Pokémon"
-            onChange={handleSearchChange} // Search Pokémon by name
+            onChange={handleSearchChange}
           />
           <select
             className="form-select form-select-sm fs-5"
-            onChange={handleSortChange} // Sort by name or ID, height, weight
+            onChange={handleSortChange}
           >
             <option value="id">Sort by ID</option>
             <option value="name">Sort by Name</option>
@@ -111,7 +112,7 @@ const PokemonGallery: React.FC = () => {
           </select>
         </div>
 
-        {filteredPokemonList.slice(0, visibleCount).map((pokemon) => (
+        {visiblePokemon.map((pokemon) => (
           <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={pokemon.name}>
             <PokemonCard name={pokemon.name} url={pokemon.url} />
           </div>
